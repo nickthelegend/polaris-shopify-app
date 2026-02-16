@@ -1,0 +1,21 @@
+[app]
+name = "polaris-shopify-app"
+client_id = "process.env.SHOPIFY_API_KEY"
+application_url = "https://your-ngrok-app.ngrok.io"
+embedded = true
+
+[webhooks]
+api_version = "2024-01"
+
+[access_scopes]
+scopes = "write_payment_gateways,read_payment_gateways,write_checkouts,read_checkouts"
+
+[auth]
+redirect_urls = [
+  "https://your-ngrok-app.ngrok.io/auth/callback",
+  "https://your-ngrok-app.ngrok.io/auth/shopify/callback",
+  "https://your-ngrok-app.ngrok.io/api/auth/callback"
+]
+
+[pos]
+embedded = false

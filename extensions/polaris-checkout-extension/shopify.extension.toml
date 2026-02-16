@@ -1,0 +1,45 @@
+api_version = "2024-01"
+
+[[extensions]]
+type = "ui_extension"
+name = "polaris-checkout-extension"
+handle = "polaris-checkout-extension"
+
+[extensions.capabilities]
+network_access = true
+block_progress = true
+
+# The URL that Shopify will call to process the payment session
+[[extensions.capabilities.payment_session_url]]
+url = "https://your-ngrok-app.ngrok.io/api/payment-session"
+
+[[extensions.capabilities.refund_session_url]]
+url = "https://your-ngrok-app.ngrok.io/api/refund-session"
+
+[[extensions.capabilities.capture_session_url]]
+url = "https://your-ngrok-app.ngrok.io/api/capture-session"
+
+[[extensions.capabilities.void_session_url]]
+url = "https://your-ngrok-app.ngrok.io/api/void-session"
+
+[[extensions.settings]]
+key = "payment_gateway_name"
+type = "single_line_text_field"
+name = "Payment Gateway Name"
+description = "Display name for the Polaris payment method"
+default_value = "Pay with Polaris Protocol"
+match_condition = "always"
+
+[[extensions.settings]]
+key = "api_key"
+type = "single_line_text_field"
+name = "Polaris API Key"
+description = "Your PayEase API Public Key"
+match_condition = "always"
+
+[[extensions.settings]]
+key = "api_secret"
+type = "single_line_text_field"
+name = "Polaris API Secret"
+description = "Your PayEase API Secret Key"
+match_condition = "always"
