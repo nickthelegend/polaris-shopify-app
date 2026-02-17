@@ -12,7 +12,11 @@ interface PolarisPaymentResponse {
 }
 
 // Ensure you set your API keys as env vars in Shopify or `.env`
-const POLARIS_API_URL = process.env.POLARIS_CHECKOUT_APP_URL || "https://polaris-checkout-app.vercel.app/api/bills/create";
+
+// Ensure you set your API keys as env vars in Shopify or `.env`
+// Pointing to PayEase (Main App) local URL by default
+const POLARIS_API_URL = process.env.POLARIS_CHECKOUT_APP_URL || "http://localhost:3000/api/bills/create";
+
 
 export async function action({ request }: ActionFunctionArgs) {
     try {
@@ -26,32 +30,30 @@ export async function action({ request }: ActionFunctionArgs) {
             gid: order_gid,
         } = payload;
 
-        // Call Polaris API to create a payment session
-        // This assumes Polaris has an API endpoint that takes:
-        // - amount
-        // - currency
-        // - customer email
-        // - metadata (order ID)
-        // And returns a `redirect_url` to the checkout page OR processes directly.
 
-        // If using the PayWithPolaris flow, we redirect the user to the `checkoutUrl`.
+        // Call Polaris API to create a payment session
+        // The API returns { billId, checkoutUrl, ... }
+
         const response = await fetch(POLARIS_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "x-client-id": process.env.POLARIS_API_KEY || "", // From Extension Settings ideally passed via context, but simpler here
-                "x-client-secret": process.env.POLARIS_API_SECRET || "",
+                "x-client-id": process.env.POLARIS_API_KEY || "DEMO_KEY", // Should be configured in env
+                "x-client-secret": process.env.POLARIS_API_SECRET || "DEMO_SECRET",
             },
             body: JSON.stringify({
                 amount: amount,
-                description: `Order #${order_id}`,
-                customer_email: customer?.email,
+                description: `Shopify Order #${order_id}`,
+                currency: currency,
                 metadata: {
-                    shopify_order_id: order_id,
+                    shopify_order_id: String(order_id),
                     shopify_order_gid: order_gid,
+                    customer_email: customer?.email,
+                    shop_domain: request.headers.get("shopify-shop-domain"),
                 },
             }),
         });
+
 
         if (!response.ok) {
             const errorData = await response.json();
