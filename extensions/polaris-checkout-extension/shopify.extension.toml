@@ -6,10 +6,10 @@ name = "polaris-checkout-extension"
 handle = "polaris-checkout-extension"
 
 # Offsite Payment Extension Configuration
-payment_session_url = "https://your-ngrok-app.ngrok.io/api/payment-session"
-refund_session_url = "https://your-ngrok-app.ngrok.io/api/refund-session"
-capture_session_url = "https://your-ngrok-app.ngrok.io/api/capture-session"
-void_session_url = "https://your-ngrok-app.ngrok.io/api/void-session"
+payment_session_url = "https://polaris-developers.vercel.app/api/payment-session"
+refund_session_url = "https://polaris-developers.vercel.app/api/refund-session"
+capture_session_url = "https://polaris-developers.vercel.app/api/capture-session"
+void_session_url = "https://polaris-developers.vercel.app/api/void-session"
 
 merchant_label = "Pay with Polaris Protocol"
 supported_countries = ["US", "CA", "GB", "AU", "DE", "FR", "IN"]
@@ -29,14 +29,3 @@ name = "Payment Gateway Name"
 description = "Display name for the Polaris payment method"
 default_value = "Pay with Polaris Protocol"
 
-[[extensions.settings]]
-key = "api_key"
-type = "single_line_text_field"
-name = "Polaris API Key"
-description = "Your PayEase API Public Key"
-
-[[extensions.settings]]
-key = "api_secret"
-type = "single_line_text_field"
-name = "Polaris API Secret"
-description = "Your PayEase API Secret Key"

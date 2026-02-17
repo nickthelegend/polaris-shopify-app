@@ -31,3 +31,9 @@ model PaymentSession {
   cancelUrl       String?
   proposedAt      DateTime?
 }
+model Configuration {
+  shop      String @id
+  apiKey    String
+  apiSecret String
+  updatedAt DateTime @updatedAt
+}

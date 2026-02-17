@@ -1,7 +1,7 @@
 [app]
 name = "polaris-shopify-app"
 client_id = "process.env.SHOPIFY_API_KEY"
-application_url = "https://your-ngrok-app.ngrok.io"
+application_url = "https://polaris-developers.vercel.app"
 embedded = true
 
 [webhooks]
@@ -12,9 +12,9 @@ scopes = "write_payment_gateways,read_payment_gateways,write_checkouts,read_chec
 
 [auth]
 redirect_urls = [
-  "https://your-ngrok-app.ngrok.io/auth/callback",
-  "https://your-ngrok-app.ngrok.io/auth/shopify/callback",
-  "https://your-ngrok-app.ngrok.io/api/auth/callback"
+  "https://polaris-developers.vercel.app/auth/callback",
+  "https://polaris-developers.vercel.app/auth/shopify/callback",
+  "https://polaris-developers.vercel.app/api/auth/callback"
 ]
 
 [pos]

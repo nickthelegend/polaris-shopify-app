@@ -1,4 +1,6 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
+import { supabase } from "../lib/supabase";
+
 
 interface PolarisPaymentResponse {
     payment_session_id?: string;
@@ -15,7 +17,7 @@ interface PolarisPaymentResponse {
 
 // Ensure you set your API keys as env vars in Shopify or `.env`
 // Pointing to PayEase (Main App) local URL by default
-const POLARIS_API_URL = process.env.POLARIS_CHECKOUT_APP_URL || "http://localhost:3000/api/bills/create";
+const POLARIS_API_URL = process.env.POLARIS_CHECKOUT_APP_URL || "https://polaris-pay.vercel.app/api/bills/create";
 
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -31,15 +33,35 @@ export async function action({ request }: ActionFunctionArgs) {
         } = payload;
 
 
-        // Call Polaris API to create a payment session
-        // The API returns { billId, checkoutUrl, ... }
+        // Identify the merchant by their shop domain
+        const shopDomain = request.headers.get("shopify-shop-domain") || "unknown";
+
+        // Fetch credentials from Supabase
+        const { data: config, error: configError } = await supabase
+            .from('polaris_merchant_configs')
+            .select('api_key, api_secret')
+            .eq('shop', shopDomain)
+            .single();
+
+        if (configError || !config) {
+            console.error("Merchant config not found for shop:", shopDomain);
+            return json(
+                {
+                    error: {
+                        reason: "processing_error",
+                        message: "Merchant has not configured Polaris API keys.",
+                    },
+                },
+                { status: 400 }
+            );
+        }
 
         const response = await fetch(POLARIS_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "x-client-id": process.env.POLARIS_API_KEY || "DEMO_KEY", // Should be configured in env
-                "x-client-secret": process.env.POLARIS_API_SECRET || "DEMO_SECRET",
+                "x-client-id": config.api_key,
+                "x-client-secret": config.api_secret,
             },
             body: JSON.stringify({
                 amount: amount,
@@ -49,7 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
                     shopify_order_id: String(order_id),
                     shopify_order_gid: order_gid,
                     customer_email: customer?.email,
-                    shop_domain: request.headers.get("shopify-shop-domain"),
+                    shop_domain: shopDomain,
                 },
             }),
         });

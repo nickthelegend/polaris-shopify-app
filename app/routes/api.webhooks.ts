@@ -1,22 +1,10 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import { PaymentsAppsClient } from "../../payments-apps.graphql";
-import { shopify } from "../../shopify.server";
+import { PaymentsAppsClient } from "../payments-apps.graphql";
+import shopify from "../shopify.server";
 
 export async function action({ request }: ActionFunctionArgs) {
     try {
-        const topic = request.headers.get("x-shopify-topic") || "unknown";
-        const shop = request.headers.get("x-shopify-shop-domain");
-
-        // Authenticate the webhook request
-        // Note: shopify.authenticate.webhook(request) is the standard way but we are doing custom raw handling here
-        // for simplicity or if standard validation fails due to proxy issues.
-        // However, in production, rely on shopify.authenticate.webhook OR manual HMAC check.
-
-        /* 
         const { topic, shop, session, admin, payload } = await shopify.authenticate.webhook(request);
-        */
-
-        const payload = await request.json();
 
         console.log(`Received Webhook: ${topic} for shop ${shop}`, payload);
 
