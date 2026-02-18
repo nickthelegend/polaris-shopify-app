@@ -1,21 +1,21 @@
-[app]
-name = "polaris-shopify-app"
-client_id = "process.env.SHOPIFY_API_KEY"
-application_url = "https://polaris-developers.vercel.app"
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "e6a08a47adac58214608a7164349d2fd"
+name = "polaris"
+application_url = "https://example.com"
 embedded = true
 
 [webhooks]
-api_version = "2024-01"
+api_version = "2026-01"
 
 [access_scopes]
-scopes = "write_payment_gateways,read_payment_gateways,write_checkouts,read_checkouts"
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = ""
+optional_scopes = [ ]
+use_legacy_install_flow = false
 
 [auth]
-redirect_urls = [
-  "https://polaris-developers.vercel.app/auth/callback",
-  "https://polaris-developers.vercel.app/auth/shopify/callback",
-  "https://polaris-developers.vercel.app/api/auth/callback"
-]
+redirect_urls = [ ]
 
 [pos]
 embedded = false
