@@ -2,7 +2,7 @@
 
 client_id = "e6a08a47adac58214608a7164349d2fd"
 name = "polaris"
-application_url = "https://example.com"
+application_url = "https://polaris-developers.vercel.app"
 embedded = true
 
 [webhooks]
