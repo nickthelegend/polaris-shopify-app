@@ -3,7 +3,7 @@
 
 # The version of APIs your extension will receive. Learn more:
 # https://shopify.dev/docs/api/usage/versioning
-api_version = "2026-01"
+api_version = "unstable"
 
 [[extensions]]
 name = "polaris-checkout-ui"
@@ -18,6 +18,10 @@ uid = "5b17c9d1-0611-f791-0701-8d060d955794ef3ce4bd"
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
 target = "purchase.checkout.block.render"
+
+[[extensions.targeting]]
+module = "./src/Checkout.jsx"
+target = "purchase.thank-you.block.render"
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.

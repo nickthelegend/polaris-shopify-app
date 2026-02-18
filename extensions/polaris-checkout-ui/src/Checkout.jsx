@@ -1,46 +1,49 @@
-import '@shopify/ui-extensions/preact';
-import {render} from "preact";
 
-// 1. Export the extension
-export default async () => {
-  render(<Extension />, document.body)
-};
+import {
+  reactExtension,
+  Banner,
+  BlockStack,
+  Button,
+  InlineLayout,
+  Text,
+  useApi,
+  useTranslate,
+  useTotalAmount,
+  useOrder,
+} from "@shopify/ui-extensions-react/checkout";
+
+// Valid targets for this extension
+export default reactExtension("purchase.checkout.block.render", () => <Extension />);
+export { reactExtension as thankYouExtension } from "@shopify/ui-extensions-react/checkout";
 
 function Extension() {
-  // 2. Check instructions for feature availability, see https://shopify.dev/docs/api/checkout-ui-extensions/apis/cart-instructions for details
-  if (!shopify.instructions.value.attributes.canUpdateAttributes) {
-    // For checkouts such as draft order invoices, cart attributes may not be allowed
-    // Consider rendering a fallback UI or nothing at all, if the feature is unavailable
-    return (
-      <s-banner heading="polaris-checkout-ui" tone="warning">
-        {shopify.i18n.translate("attributeChangesAreNotSupported")}
-      </s-banner>
-    );
+  const translate = useTranslate();
+  const { extension } = useApi();
+  const total = useTotalAmount();
+  const order = useOrder(); // Available on Thank You page
+
+  // If we are on checkout but not seeing "manual payment", we hide.
+  // Ideally, we only show this if the selected payment method is "Manual" or matches "Polaris".
+  // For simplicity, we show it always but guide usage.
+
+  if (!order) {
+    // Only show on Thank You Page (post-purchase) where order ID exists
+    return null;
   }
 
-  // 3. Render a UI
+  // Construct the Payment URL
+  const paymentUrl = `https://polaris-pay.vercel.app/pay?orderId=${order.id.split("/").pop()}&amount=${total?.amount}&currency=${total?.currencyCode}`;
+
   return (
-    <s-banner heading="polaris-checkout-ui">
-      <s-stack gap="base">
-        <s-text>
-          {shopify.i18n.translate("welcome", {
-            target: <s-text type="emphasis">{shopify.extension.target}</s-text>,
-          })}
-        </s-text>
-        <s-button onClick={handleClick}>
-          {shopify.i18n.translate("addAFreeGiftToMyOrder")}
-        </s-button>
-      </s-stack>
-    </s-banner>
+    <BlockStack spacing="loose">
+      <Banner title="Complete Your Payment" status="info">
+        Please complete your payment securely via Polaris Protocol to finalize your order.
+      </Banner>
+      <InlineLayout>
+        <Button to={paymentUrl} accessibilityRole="link">
+          Pay with Polaris Protocol
+        </Button>
+      </InlineLayout>
+    </BlockStack>
   );
-
-  async function handleClick() {
-    // 4. Call the API to modify checkout
-    const result = await shopify.applyAttributeChange({
-      key: "requestedFreeGift",
-      type: "updateAttribute",
-      value: "yes",
-    });
-    console.log("applyAttributeChange result", result);
-  }
 }
